@@ -46,6 +46,16 @@ Afin d'obtenir ce résultat, implémenter les classes ci-après en suivant les s
 |---|---|
 | _**String** getName()_ | Renvoie le nom de la direction (exemple: `"north"`) |
 
+### `RoomConnection`
+
+- Représente un passage entre deux lieux.
+
+| Méthode | Description |
+|---|---|
+| _**Room** getFromRoom()_ | Renvoie le lieu dont part le passage |
+| _**Room** getToRoom()_ | Renvoie le lieu auquel le passage aboutit |
+| _**Direction** getDirection()_ | Renvoie la direction qu'il faut suivre pour emprunter ce passage |
+
 ### `Game`
 
 - Représente une partie jouée par le joueur.
