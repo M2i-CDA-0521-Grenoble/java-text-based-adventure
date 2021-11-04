@@ -145,3 +145,80 @@ Implémenter une ou plusieurs des classes suivantes:
 - Toucher une prise électrique (`touch plug`) doit produire la mort du héros, et donc la fin de la partie.
 
 Si le bonus de l'étape 3 a été réalisé, chaque interaction doit être accompagnée d'au moins un message décrivant l'effet obtenu.
+
+## Mission 3: Harmoniser les commandes
+
+Le processus principal qui permet de faire fonctionner le jeu est désormais capable de reconnaître les saisies utilisateur qui correspondent à une direction (`east`, `south`, `west`…) ainsi que celles qui correspondent à une interaction avec un objet (`use bed`, `open drawer`, `pick up notepad`…). À ce stade, nous aimerions ajouter des commandes générales comme `help` qui pourrait afficher la liste des commandes possibles, ou encore `exit` qui permettrait d'interrompre le jeu. Cependant, nous commençons à entrevoir que le fait de rajouter des nouvelles commandes de la sorte risque de complexifier le processus principal du jeu, qui est déjà bien chargé: car si nous continuons sur notre lancée, chaque nouveau type de commandes va devoir être traité séparément des autres.
+
+Dans un premier temps, considérant qu'il est de la responsabilité de chaque commande de savoir quel effet elle est censée produire, il pourrait être judicieux d'alléger le processus principal en déplaçant les différents effets possibles (quitter le jeu, afficher les commandes disponibles, changer de lieu, etc…) dans la classe correspondante.
+
+De plus, considérant que les nouvelles commandes que nous souhaiterions implémenter, mais aussi les directions, et les actions que nous pouvons utiliser sur les éléments interactifs, sont finalement toutes des types de commandes qui ont simplement leur particularités, l'objectif ultime de cette mission est de parvenir à refactoriser le code de manière que tous les types de commandes soient traités de la mème manière, au lieu d'ètre traités séparément.
+
+<details>
+<summary>Illustration</summary>
+
+La logique actuelle:
+```java
+class Game
+{
+    public void update()
+    {
+        // Attend une saisie utilisateur
+        // Si la saisie utilisateur correspond à la commande "quitter le jeu"
+            // Termine la partie
+        // Si la saisie utilisateur correspond à la commande "afficher l'aide"
+            // Affiche la liste des commandes
+        // Si la saisie utilisateur correspond à une direction
+            // Modifie le lieu actuel
+        // Si la saisie utilisateur correspond à une interaction avec un élément présent dans le lieu actuel
+            // Déclenche l'effet correspondant à la commande spécifiée sur cet élément
+        // etc…
+    }
+}
+```
+
+La logique désirée:
+```java
+class Game
+{
+    public void update()
+    {
+        // Attend une saisie utilisateur
+        // Pour chaque commande possible, peu importe son type réel (commande globale, direction, interaction…)
+            // Demande à la commande de traiter la saisie utilisateur. Si la commande correspond à la saisie utilisateur, elle réalise l'effet de la commande par elle-même, et la boucle est interrompue. Sinon, rien ne se passe.
+    }
+}
+```
+
+</details>
+
+### 1. Ajouter des commandes globales
+
+- Implémenter une ou plusieurs des classes suivantes:
+
+| Classe | Description |
+|---|---|
+| **ExitCommand** | Termine la partie en cours. |
+| **HelpCommand** | Affiche la liste de toutes les commandes possibles. |
+| **ResetCommand** | Recommence une nouvelle partie. |
+
+> - Chacune de ces classes doit posséder une propriété **Game** qui fait référence à la partie en cours.
+> - Chacune de ces classes doit posséder une méthode _**boolean** process(**String** userInput)_. Le rôle de cette méthode est de traiter une saisie utilisateur. Si la saisie utilisateur correspond à la commande concernée, alors elle doit produire l'effet de la commande et renvoyer **true**. Sinon, elle doit ne rien faire et renvoyer **false**.
+- Ajouter au processus principal dans la classe **Game** une condition demandant à une instance de chacune de ces classes de traiter par elle-même la saisie utilisateur.
+
+### 2. Refactoriser les directions
+
+- Renommer la classe **Direction** en **DirectionCommand**.
+- Adapter la classe **DirectionCommand** pour qu'elle corresponde aux même spécifications que les commandes globales, énumérées au point 1.
+- Adapter le processus principal dans la classe **Game** de façon que celui-ci se contente de demander à chaque direction de traiter par elle-même la saisie utilisateur.
+
+### 3. Refactoriser les interactions avec les éléments
+
+- Renommer la classe **Command** en **ItemCommand**.
+- Adapter la classe **ItemCommand** pour qu'elle corresponde aux même spécifications que les commandes globales, énumérées au point 1.
+- Adapter le processus principal dans la classe **Game** de façon que celui-ci se contente de demander à chaque commande représentant une interaction avec un élément de traiter par elle-même la saisie utilisateur.
+
+### 4. Unifier tous les types de commandes
+
+- Écrire une interface **Command** qui synthétise la structure commune à toutes les classes de commandes crées précédemment. Toutes les classes de commandes doivent implémenter cette interface.
+- Refactoriser le processus principal dans la classe **Game** de façon à rassembler tous les appels aux méthodes _process_ en un seul et même appel.
