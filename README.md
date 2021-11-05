@@ -209,13 +209,13 @@ class Game
 ### 2. Refactoriser les directions
 
 - Renommer la classe **Direction** en **DirectionCommand**.
-- Adapter la classe **DirectionCommand** pour qu'elle corresponde aux même spécifications que les commandes globales, énumérées au point 1.
+- Adapter la classe **DirectionCommand** pour qu'elle corresponde aux mêmes spécifications que les commandes globales, énumérées au point 1.
 - Adapter le processus principal dans la classe **Game** de façon que celui-ci se contente de demander à chaque direction de traiter par elle-même la saisie utilisateur.
 
 ### 3. Refactoriser les interactions avec les éléments
 
 - Renommer la classe **Command** en **ItemCommand**.
-- Adapter la classe **ItemCommand** pour qu'elle corresponde aux même spécifications que les commandes globales, énumérées au point 1.
+- Adapter la classe **ItemCommand** pour qu'elle corresponde aux mêmes spécifications que les commandes globales, énumérées au point 1.
 - Adapter le processus principal dans la classe **Game** de façon que celui-ci se contente de demander à chaque commande représentant une interaction avec un élément de traiter par elle-même la saisie utilisateur.
 
 ### 4. Unifier tous les types de commandes
