@@ -1,5 +1,7 @@
 package com.example.entity.command;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,6 +27,10 @@ public class ItemCommand implements Command
      * La partie en cours
      */
     private Game game;
+    /**
+     * La liste de tous les effets que cette commande peut déclencher lorsqu'elle est utilisée sur un élément interactif
+     */
+    private List<Effect> effects;
 
     /**
      * Crée une nouvelle commande
@@ -37,6 +43,7 @@ public class ItemCommand implements Command
         this.game = game;
         this.command = command;
         this.defaultMessage = defaultMessage;
+        effects = new ArrayList<>();
     }
 
     /**
@@ -59,16 +66,18 @@ public class ItemCommand implements Command
                 if (item.getName().equals(itemName)) {
                     // Si l'objet existe et est visible
                     if (item.isVisible()) {
-                        // Récupère l'effet associé à cet élément interactif et à cette commande
-                        Effect effect = item.getEffectBoundToCommand(this);
+                        // Récupère tous les effets associés à cet élément interactif et à cette commande
+                        List<Effect> effects = findEffectsByItem(item);
                         // Si aucun effet n'a été programmé pour cette commmande utilisée sur cet élément interactif
-                        if (effect == null) {
+                        if (effects.isEmpty()) {
                             // Affiche le message par défaut de la commande
                             System.out.println(defaultMessage);
                             return true;
                         }
-                        // Sinon, déclenche l'effet trouvé
-                        effect.trigger();
+                        // Sinon, déclenche tous les effets trouvés
+                        for (Effect effect : effects) {
+                            effect.trigger();
+                        }
                         return true;
                     }
                 }
@@ -80,6 +89,25 @@ public class ItemCommand implements Command
         // Sinon, c'est que la saisie utilisateur correspondait à une autre commande (ou à aucune commande)
         // Renvoie faux
         return false;
+    }
+
+    /**
+     * Cherche tous les effets correspondant à un élément interactif particulier parmi tous les effets associés à cette commande
+     * @param item L'élément interactif associé aux effets recherchés
+     * @return
+     */
+    public List<Effect> findEffectsByItem(Item item)
+    {
+        List<Effect> result = new ArrayList<>();
+        // Pour chaque effet parmi tous les effets possibles associés à cette commande
+        for (Effect effect : effects) {
+            // Si l'élément interactif associé à cet effet est l'élément interactif recherché
+            if (effect.getItem() == item) {
+                // Ajoute l'effet à la liste des résultats
+                result.add(effect);
+            }
+        }
+        return result;
     }
 
     /**
@@ -96,5 +124,13 @@ public class ItemCommand implements Command
     public String getDefaultMessage()
     {
         return defaultMessage;
+    }
+
+    /**
+     * Ajoute un effet à la liste
+     */
+    public void addEffect(Effect effect)
+    {
+        effects.add(effect);
     }
 }

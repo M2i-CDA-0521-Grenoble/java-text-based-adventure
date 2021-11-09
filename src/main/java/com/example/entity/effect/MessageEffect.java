@@ -1,9 +1,12 @@
 package com.example.entity.effect;
 
+import com.example.entity.Item;
+import com.example.entity.command.ItemCommand;
+
 /**
  * Représente un effet permettant d'afficher un message dans la console
  */
-public class MessageEffect implements Effect
+public class MessageEffect extends AbstractEffect
 {
     /**
      * Le message à afficher
@@ -14,9 +17,10 @@ public class MessageEffect implements Effect
      * Crée un nouvel effet
      * @param message Le message à afficher
      */
-    public MessageEffect(String message)
+    public MessageEffect(Item item, ItemCommand command, String message)
     {
-        this.message = message;        
+        super(item, command);
+        this.message = message;
     }
 
     /**
